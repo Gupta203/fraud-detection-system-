@@ -13,6 +13,11 @@ import {
   Users,
   Activity,
   FileJson,
+  Workflow,
+  Gauge,
+  Radio,
+  Filter,
+  BookOpen,
 } from "lucide-react"
 
 const navigationItems = [
@@ -25,6 +30,11 @@ const navigationItems = [
   { icon: Activity, label: "Anomaly Detection", id: "anomaly" },
   { icon: GitCompare, label: "Model Comparison", id: "models" },
   { icon: Users, label: "Customer Profiles", id: "customers" },
+  { icon: Workflow, label: "ML Pipeline", id: "pipeline" },
+  { icon: Gauge, label: "Predictive Analytics", id: "predictive" },
+  { icon: Radio, label: "Real-Time Monitor", id: "monitoring" },
+  { icon: Filter, label: "Advanced Filters", id: "filters" },
+  { icon: BookOpen, label: "Compliance", id: "compliance" },
   { icon: FileJson, label: "Export Reports", id: "reports" },
   { icon: Brain, label: "Fraud Demo", id: "demo" },
   { icon: FileText, label: "Documentation", id: "docs" },
@@ -39,7 +49,7 @@ export function Sidebar({ activeTab, onTabChange }) {
           <Brain className="w-8 h-8 text-sidebar-accent" />
           FraudShield
         </h1>
-        <p className="text-sm text-muted-foreground mt-1">AI Detection System</p>
+        <p className="text-sm text-muted-foreground mt-1">AI Detection System v2.0</p>
       </div>
 
       <nav className="flex-1 p-4 space-y-2">
@@ -69,7 +79,7 @@ export function Sidebar({ activeTab, onTabChange }) {
           <p className="text-muted-foreground">Online & Monitoring</p>
           <div className="mt-2 flex gap-2">
             <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-            <span className="text-xs text-muted-foreground">Active</span>
+            <span className="text-xs text-muted-foreground">Active (v2.0 - 15 Features)</span>
           </div>
         </div>
       </div>

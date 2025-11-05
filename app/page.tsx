@@ -16,6 +16,11 @@ import { CustomerProfiles } from "@/components/customer-profiles"
 import { SettingsPanel } from "@/components/settings-panel"
 import { AnomalyDetection } from "@/components/anomaly-detection"
 import { ReportExport } from "@/components/report-export"
+import { MLPipelineVisualizer } from "@/components/ml-pipeline-visualizer"
+import { PredictiveAnalytics } from "@/components/predictive-analytics"
+import { RealTimeMonitoring } from "@/components/real-time-monitoring"
+import { AdvancedFilters } from "@/components/advanced-filters"
+import { ComplianceReporting } from "@/components/compliance-reporting"
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState("dashboard")
@@ -43,6 +48,11 @@ export default function Home() {
           {activeTab === "anomaly" && <AnomalyDetection />}
           {activeTab === "models" && <ModelComparison />}
           {activeTab === "customers" && <CustomerProfiles />}
+          {activeTab === "pipeline" && <MLPipelineVisualizer />}
+          {activeTab === "predictive" && <PredictiveAnalytics />}
+          {activeTab === "monitoring" && <RealTimeMonitoring />}
+          {activeTab === "filters" && <AdvancedFilters />}
+          {activeTab === "compliance" && <ComplianceReporting />}
           {activeTab === "reports" && <ReportExport />}
           {activeTab === "analytics" && <AnalyticsPage />}
           {activeTab === "demo" && <FraudDemo />}
