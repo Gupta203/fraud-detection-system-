@@ -2,10 +2,23 @@
 
 import { Bell, Search, Clock } from "lucide-react"
 import { Input } from "@/components/ui/input"
+import { useState } from "react"
+import { notificationManager } from "@/lib/notification-service"
 
 export function Header({ alertsCount = 0 }: { alertsCount?: number }) {
   const now = new Date()
   const timeString = now.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" })
+  const [showNotifications, setShowNotifications] = useState(false)
+
+  const handleNotificationClick = () => {
+    setShowNotifications(!showNotifications)
+    if (!showNotifications) {
+      notificationManager.info(
+        "Notifications Panel",
+        `You have ${alertsCount} active alerts. Check the Alerts section for details.`,
+      )
+    }
+  }
 
   return (
     <header className="bg-card border-b border-border px-8 py-4 flex items-center justify-between">
@@ -21,10 +34,10 @@ export function Header({ alertsCount = 0 }: { alertsCount?: number }) {
           <Clock className="w-4 h-4" />
           <span>{timeString}</span>
         </div>
-        <button className="relative p-2 hover:bg-muted rounded-lg transition-colors">
+        <button onClick={handleNotificationClick} className="relative p-2 hover:bg-muted rounded-lg transition-colors">
           <Bell className="w-5 h-5 text-foreground" />
           {alertsCount > 0 && (
-            <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center text-xs font-bold text-white">
+            <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center text-xs font-bold text-white animate-pulse">
               {alertsCount > 9 ? "9+" : alertsCount}
             </span>
           )}

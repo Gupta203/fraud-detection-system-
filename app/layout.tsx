@@ -7,8 +7,9 @@ const geistSans = Geist({ subsets: ["latin"] })
 const geistMono = Geist_Mono({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "FraudShield - AI Fraud Detection System v2.0",
-  description: "Enterprise-grade AI/ML-based fraud detection with 15 advanced features",
+  title: "FraudShield v2.2 - AI Fraud Detection System with Chatbot & APK Generator",
+  description:
+    "Enterprise-grade AI/ML-based fraud detection with 22 advanced features including AI Chatbot, APK Generator, PDF Reports, and real-time monitoring",
   viewport: "width=device-width, initial-scale=1",
   icons: {
     icon: [

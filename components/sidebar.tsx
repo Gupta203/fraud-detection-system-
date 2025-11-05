@@ -18,13 +18,31 @@ import {
   Radio,
   Filter,
   BookOpen,
+  MessageSquare,
+  AlertCircle,
+  Lightbulb,
+  Shield,
+  Smartphone,
+  LayoutGrid,
+  MessageCircle,
+  Download,
 } from "lucide-react"
 
 const navigationItems = [
+  { icon: LayoutGrid, label: "All Features", id: "features-doc", badge: "GUIDE" },
   { icon: BarChart3, label: "Dashboard", id: "dashboard" },
   { icon: TrendingUp, label: "Analytics", id: "analytics" },
-  { icon: Bell, label: "Real-Time Alerts", id: "alerts" },
-  { icon: Search, label: "Transaction Search", id: "search" },
+  { icon: MessageCircle, label: "AI Chatbot", id: "chatbot", badge: "AI" },
+  { icon: Download, label: "APK Generator", id: "apk-generator", badge: "NEW" },
+  { icon: AlertCircle, label: "Smart Alerts", id: "smart-alerts", badge: "NEW" },
+  { icon: Activity, label: "Live Feed", id: "live-feed", badge: "LIVE" },
+  { icon: Lightbulb, label: "Intelligence", id: "intelligence", badge: "AI" },
+  { icon: Zap, label: "Simulator", id: "simulator" },
+  { icon: MessageSquare, label: "Team Hub", id: "collaboration" },
+  { icon: Shield, label: "Security Audit", id: "security" },
+  { icon: Smartphone, label: "Mobile App", id: "mobile" },
+  { icon: Bell, label: "Alerts", id: "alerts" },
+  { icon: Search, label: "Search", id: "search" },
   { icon: Target, label: "Risk Scoring", id: "risk-scoring" },
   { icon: Zap, label: "Batch Detection", id: "batch" },
   { icon: Activity, label: "Anomaly Detection", id: "anomaly" },
@@ -49,7 +67,7 @@ export function Sidebar({ activeTab, onTabChange }) {
           <Brain className="w-8 h-8 text-sidebar-accent" />
           FraudShield
         </h1>
-        <p className="text-sm text-muted-foreground mt-1">AI Detection System v2.0</p>
+        <p className="text-sm text-muted-foreground mt-1">v2.2 - 22 Advanced Features</p>
       </div>
 
       <nav className="flex-1 p-4 space-y-2">
@@ -67,7 +85,20 @@ export function Sidebar({ activeTab, onTabChange }) {
               }`}
             >
               <Icon className="w-5 h-5" />
-              <span>{item.label}</span>
+              <span className="flex-1">{item.label}</span>
+              {item.badge && (
+                <span
+                  className={`text-xs px-2 py-0.5 rounded-full font-semibold ${
+                    item.badge === "NEW"
+                      ? "bg-green-500/20 text-green-400"
+                      : item.badge === "LIVE"
+                        ? "bg-red-500/20 text-red-400 animate-pulse"
+                        : "bg-blue-500/20 text-blue-400"
+                  }`}
+                >
+                  {item.badge}
+                </span>
+              )}
             </button>
           )
         })}
@@ -79,7 +110,7 @@ export function Sidebar({ activeTab, onTabChange }) {
           <p className="text-muted-foreground">Online & Monitoring</p>
           <div className="mt-2 flex gap-2">
             <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-            <span className="text-xs text-muted-foreground">Active (v2.0 - 15 Features)</span>
+            <span className="text-xs text-muted-foreground">Active (v2.2 - 22 Features)</span>
           </div>
         </div>
       </div>

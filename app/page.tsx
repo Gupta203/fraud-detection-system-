@@ -21,6 +21,17 @@ import { PredictiveAnalytics } from "@/components/predictive-analytics"
 import { RealTimeMonitoring } from "@/components/real-time-monitoring"
 import { AdvancedFilters } from "@/components/advanced-filters"
 import { ComplianceReporting } from "@/components/compliance-reporting"
+import { SmartAlerts } from "@/components/smart-alerts"
+import { LiveTransactionFeed } from "@/components/live-transaction-feed"
+import { IntelligenceDashboard } from "@/components/intelligence-dashboard"
+import { FraudPreventionSimulator } from "@/components/fraud-prevention-simulator"
+import { TeamCollaboration } from "@/components/team-collaboration"
+import { SecurityAudit } from "@/components/security-audit"
+import { MobileAppPreview } from "@/components/mobile-app-preview"
+import { FeaturesDocumentation } from "@/components/features-documentation"
+import { ToastProvider } from "@/components/toast-provider"
+import { AIChatbot } from "@/components/ai-chatbot"
+import { MobileAPKGenerator } from "@/components/mobile-apk-generator"
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState("dashboard")
@@ -35,31 +46,64 @@ export default function Home() {
   ])
 
   return (
-    <div className="flex h-screen bg-background">
-      <Sidebar activeTab={activeTab} onTabChange={setActiveTab} />
-      <div className="flex-1 flex flex-col overflow-hidden">
-        <Header alertsCount={alerts.filter((a) => a.status === "active").length} />
-        <main className="flex-1 overflow-y-auto">
-          {activeTab === "dashboard" && <Dashboard />}
-          {activeTab === "alerts" && <AlertsPanel alerts={alerts} />}
-          {activeTab === "search" && <TransactionSearch />}
-          {activeTab === "risk-scoring" && <RiskScoring />}
-          {activeTab === "batch" && <BatchDetection />}
-          {activeTab === "anomaly" && <AnomalyDetection />}
-          {activeTab === "models" && <ModelComparison />}
-          {activeTab === "customers" && <CustomerProfiles />}
-          {activeTab === "pipeline" && <MLPipelineVisualizer />}
-          {activeTab === "predictive" && <PredictiveAnalytics />}
-          {activeTab === "monitoring" && <RealTimeMonitoring />}
-          {activeTab === "filters" && <AdvancedFilters />}
-          {activeTab === "compliance" && <ComplianceReporting />}
-          {activeTab === "reports" && <ReportExport />}
-          {activeTab === "analytics" && <AnalyticsPage />}
-          {activeTab === "demo" && <FraudDemo />}
-          {activeTab === "settings" && <SettingsPanel />}
-          {activeTab === "docs" && <Documentation />}
-        </main>
+    <ToastProvider>
+      <AIChatbot />
+      <div className="flex h-screen bg-background">
+        <Sidebar activeTab={activeTab} onTabChange={setActiveTab} />
+        <div className="flex-1 flex flex-col overflow-hidden">
+          <Header alertsCount={alerts.filter((a) => a.status === "active").length} />
+          <main className="flex-1 overflow-y-auto">
+            {activeTab === "features-doc" && <FeaturesDocumentation />}
+            {activeTab === "dashboard" && <Dashboard />}
+            {activeTab === "alerts" && <AlertsPanel alerts={alerts} />}
+            {activeTab === "smart-alerts" && <SmartAlerts />}
+            {activeTab === "live-feed" && <LiveTransactionFeed />}
+            {activeTab === "intelligence" && <IntelligenceDashboard />}
+            {activeTab === "simulator" && <FraudPreventionSimulator />}
+            {activeTab === "collaboration" && <TeamCollaboration />}
+            {activeTab === "security" && <SecurityAudit />}
+            {activeTab === "mobile" && <MobileAppPreview />}
+            {activeTab === "search" && <TransactionSearch />}
+            {activeTab === "risk-scoring" && <RiskScoring />}
+            {activeTab === "batch" && <BatchDetection />}
+            {activeTab === "anomaly" && <AnomalyDetection />}
+            {activeTab === "models" && <ModelComparison />}
+            {activeTab === "customers" && <CustomerProfiles />}
+            {activeTab === "pipeline" && <MLPipelineVisualizer />}
+            {activeTab === "predictive" && <PredictiveAnalytics />}
+            {activeTab === "monitoring" && <RealTimeMonitoring />}
+            {activeTab === "filters" && <AdvancedFilters />}
+            {activeTab === "compliance" && <ComplianceReporting />}
+            {activeTab === "reports" && <ReportExport />}
+            {activeTab === "analytics" && <AnalyticsPage />}
+            {activeTab === "demo" && <FraudDemo />}
+            {activeTab === "settings" && <SettingsPanel />}
+            {activeTab === "docs" && <Documentation />}
+            {activeTab === "chatbot" && (
+              <div className="p-8 space-y-4">
+                <h2 className="text-3xl font-bold text-foreground">AI Chatbot Assistant</h2>
+                <p className="text-muted-foreground max-w-2xl">
+                  The AI Chatbot is available as a floating button in the bottom-right corner. Click the message icon to
+                  start asking questions about fraud detection, reports, algorithms, alerts, compliance, and more!
+                </p>
+                <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-4 space-y-2">
+                  <p className="font-semibold text-foreground">Available Topics:</p>
+                  <ul className="text-sm text-muted-foreground space-y-1">
+                    <li>✓ How fraud detection works and algorithms</li>
+                    <li>✓ Risk scoring and model performance</li>
+                    <li>✓ Alert management and actions</li>
+                    <li>✓ Report generation and export formats</li>
+                    <li>✓ Mobile app features and installation</li>
+                    <li>✓ Security practices and compliance</li>
+                    <li>✓ Batch detection and customer profiles</li>
+                  </ul>
+                </div>
+              </div>
+            )}
+            {activeTab === "apk-generator" && <MobileAPKGenerator />}
+          </main>
+        </div>
       </div>
-    </div>
+    </ToastProvider>
   )
 }

@@ -4,8 +4,9 @@ import { useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { FileJson, FileText, Download, Calendar, Filter } from "lucide-react"
-import { exportToJSON } from "@/lib/export-utils"
+import { FileJson, FileText, Download, Calendar, Filter, AlertCircle } from "lucide-react"
+import { generatePDFReport, exportToJSON, exportToCSV } from "@/lib/pdf-export-utils"
+import { notificationManager } from "@/lib/notification-service"
 
 export function ReportExport() {
   const [reportType, setReportType] = useState<"daily" | "weekly" | "monthly">("daily")
@@ -17,10 +18,9 @@ export function ReportExport() {
     modelPerformance: true,
     customerProfiles: true,
   })
+  const [isExporting, setIsExporting] = useState(false)
 
-  const [downloadStatus, setDownloadStatus] = useState<string>("")
-
-  const [generatedReports, setGeneratedReports] = useState([
+  const [generatedReports] = useState([
     {
       id: 1,
       name: "Daily Report - Jan 15",
@@ -53,9 +53,10 @@ export function ReportExport() {
     },
   ])
 
-  const handleGenerateReport = async (format: "pdf" | "json") => {
+  const handleGenerateReport = async (format: "pdf" | "json" | "csv") => {
     try {
-      setDownloadStatus(`Generating ${format.toUpperCase()}...`)
+      setIsExporting(true)
+      notificationManager.info("Exporting", `Generating ${format.toUpperCase()} report...`)
 
       const reportData = {
         transactions: Array.from({ length: 50 }).map((_, i) => ({
@@ -84,21 +85,60 @@ export function ReportExport() {
         },
       }
 
-      if (format === "json") {
-        exportToJSON(reportData, `fraud-report-${dateRange.from}`)
+      if (format === "pdf") {
+        await generatePDFReport(
+          {
+            title: "Fraud Detection Report",
+            subtitle: `${reportType.charAt(0).toUpperCase() + reportType.slice(1)} Analysis`,
+            dateRange,
+            sections: [
+              {
+                name: "metrics",
+                title: "Key Metrics",
+                content: reportData.metrics,
+                type: "metrics",
+              },
+              {
+                name: "transactions",
+                title: "Transaction Details",
+                content: reportData.transactions.slice(0, 10),
+                type: "table",
+              },
+              {
+                name: "alerts",
+                title: "Recent Alerts",
+                content: reportData.alerts.map((a) => a.message),
+                type: "list",
+              },
+            ],
+            metadata: {
+              generatedAt: new Date().toISOString(),
+              generatedBy: "FraudShield System",
+              version: "2.2",
+            },
+          },
+          `fraud-report-${reportType}-${dateRange.from}`,
+        )
+      } else if (format === "json") {
+        exportToJSON(reportData, `fraud-report-${reportType}-${dateRange.from}`)
       } else {
-        exportToJSON(reportData, `fraud-report-pdf-${dateRange.from}`)
+        exportToCSV(reportData.transactions, `fraud-transactions-${reportType}-${dateRange.from}`)
       }
 
-      setDownloadStatus("Downloaded successfully!")
-      setTimeout(() => setDownloadStatus(""), 3000)
+      notificationManager.success("Export Successful", `Report downloaded as ${format.toUpperCase()}`)
     } catch (error) {
-      setDownloadStatus("Download failed. Please try again.")
+      notificationManager.error("Export Failed", "Failed to generate report. Please try again.")
+      console.error("Export error:", error)
+    } finally {
+      setIsExporting(false)
     }
   }
 
-  const handleDownloadReport = (report: any) => {
+  const handleDownloadReport = async (report: any) => {
     try {
+      setIsExporting(true)
+      notificationManager.info("Downloading", `Getting ${report.name}...`)
+
       const reportData = {
         id: report.id,
         name: report.name,
@@ -107,11 +147,13 @@ export function ReportExport() {
         fraudDetected: report.fraudDetected,
         downloadedAt: new Date().toISOString(),
       }
+
       exportToJSON(reportData, `${report.name.replace(/\s+/g, "-").toLowerCase()}`)
-      setDownloadStatus("Report downloaded!")
-      setTimeout(() => setDownloadStatus(""), 2000)
+      notificationManager.success("Downloaded", `${report.name} ready in downloads folder`)
     } catch (error) {
-      setDownloadStatus("Failed to download report")
+      notificationManager.error("Download Failed", "Failed to download report")
+    } finally {
+      setIsExporting(false)
     }
   }
 
@@ -121,12 +163,6 @@ export function ReportExport() {
         <h2 className="text-3xl font-bold text-foreground mb-2">Report Generation & Export</h2>
         <p className="text-muted-foreground">Generate comprehensive fraud detection reports in multiple formats</p>
       </div>
-
-      {downloadStatus && (
-        <div className="p-4 bg-blue-500/20 border border-blue-500 rounded-lg text-blue-400 text-sm">
-          {downloadStatus}
-        </div>
-      )}
 
       <Card className="border-border bg-card">
         <CardHeader>
@@ -138,11 +174,12 @@ export function ReportExport() {
               <button
                 key={type}
                 onClick={() => setReportType(type)}
+                disabled={isExporting}
                 className={`p-4 rounded-lg border-2 transition-colors capitalize font-semibold ${
                   reportType === type
                     ? "border-primary bg-primary/10 text-primary"
                     : "border-border bg-muted/20 text-foreground hover:border-border/80"
-                }`}
+                } disabled:opacity-50`}
               >
                 {type} Report
               </button>
@@ -156,6 +193,7 @@ export function ReportExport() {
                 type="date"
                 value={dateRange.from}
                 onChange={(e) => setDateRange({ ...dateRange, from: e.target.value })}
+                disabled={isExporting}
                 className="bg-input border-border"
               />
             </div>
@@ -165,6 +203,7 @@ export function ReportExport() {
                 type="date"
                 value={dateRange.to}
                 onChange={(e) => setDateRange({ ...dateRange, to: e.target.value })}
+                disabled={isExporting}
                 className="bg-input border-border"
               />
             </div>
@@ -179,6 +218,7 @@ export function ReportExport() {
                     type="checkbox"
                     checked={value}
                     onChange={(e) => setIncludeOptions({ ...includeOptions, [key]: e.target.checked })}
+                    disabled={isExporting}
                     className="w-4 h-4 rounded border-border bg-input cursor-pointer"
                   />
                   <span className="text-sm text-foreground capitalize">{key.replace(/([A-Z])/g, " $1")}</span>
@@ -187,14 +227,22 @@ export function ReportExport() {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
-            <Button onClick={() => handleGenerateReport("pdf")} className="bg-primary text-primary-foreground">
+          <div className="grid grid-cols-3 gap-3">
+            <Button
+              onClick={() => handleGenerateReport("pdf")}
+              disabled={isExporting}
+              className="bg-primary text-primary-foreground"
+            >
               <FileText className="w-4 h-4 mr-2" />
               Generate PDF
             </Button>
-            <Button onClick={() => handleGenerateReport("json")} variant="outline">
+            <Button onClick={() => handleGenerateReport("json")} disabled={isExporting} variant="outline">
               <FileJson className="w-4 h-4 mr-2" />
               Export JSON
+            </Button>
+            <Button onClick={() => handleGenerateReport("csv")} disabled={isExporting} variant="outline">
+              <Download className="w-4 h-4 mr-2" />
+              Export CSV
             </Button>
           </div>
         </CardContent>
@@ -203,7 +251,7 @@ export function ReportExport() {
       <Card className="border-border bg-card">
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle>Generated Reports</CardTitle>
-          <Button variant="outline" size="sm">
+          <Button variant="outline" size="sm" disabled={isExporting}>
             <Filter className="w-4 h-4 mr-2" />
             Filter
           </Button>
@@ -228,7 +276,7 @@ export function ReportExport() {
                       transactions
                     </span>
                     <span className="text-muted-foreground">
-                      <span className="font-semibold text-red-400">{report.fraudDetected}</span> fraud cases detected
+                      <span className="font-semibold text-red-400">{report.fraudDetected}</span> fraud cases
                     </span>
                     <span className="text-muted-foreground">{report.size}</span>
                   </div>
@@ -237,6 +285,7 @@ export function ReportExport() {
                   <Button
                     size="sm"
                     onClick={() => handleDownloadReport(report)}
+                    disabled={isExporting}
                     className="bg-primary text-primary-foreground"
                   >
                     <Download className="w-4 h-4 mr-1" />
@@ -248,6 +297,18 @@ export function ReportExport() {
           </div>
         </CardContent>
       </Card>
+
+      <div className="flex gap-4 p-4 bg-blue-500/10 border border-blue-500/30 rounded-lg">
+        <AlertCircle className="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" />
+        <div className="text-sm text-blue-300">
+          <p className="font-semibold">Export Tips:</p>
+          <ul className="list-disc list-inside text-xs mt-2 space-y-1">
+            <li>PDF: Formatted report for presentations and printing</li>
+            <li>JSON: Raw data for programmatic processing</li>
+            <li>CSV: Transaction data for spreadsheet analysis</li>
+          </ul>
+        </div>
+      </div>
     </div>
   )
 }
