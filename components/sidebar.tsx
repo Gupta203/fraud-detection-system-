@@ -1,10 +1,31 @@
 "use client"
-import { BarChart3, AlertCircle, Settings, FileText, Brain, TrendingUp } from "lucide-react"
+import {
+  BarChart3,
+  Settings,
+  FileText,
+  Brain,
+  TrendingUp,
+  Bell,
+  Search,
+  Target,
+  Zap,
+  GitCompare,
+  Users,
+  Activity,
+  FileJson,
+} from "lucide-react"
 
 const navigationItems = [
   { icon: BarChart3, label: "Dashboard", id: "dashboard" },
   { icon: TrendingUp, label: "Analytics", id: "analytics" },
-  { icon: AlertCircle, label: "Transactions", id: "transactions" },
+  { icon: Bell, label: "Real-Time Alerts", id: "alerts" },
+  { icon: Search, label: "Transaction Search", id: "search" },
+  { icon: Target, label: "Risk Scoring", id: "risk-scoring" },
+  { icon: Zap, label: "Batch Detection", id: "batch" },
+  { icon: Activity, label: "Anomaly Detection", id: "anomaly" },
+  { icon: GitCompare, label: "Model Comparison", id: "models" },
+  { icon: Users, label: "Customer Profiles", id: "customers" },
+  { icon: FileJson, label: "Export Reports", id: "reports" },
   { icon: Brain, label: "Fraud Demo", id: "demo" },
   { icon: FileText, label: "Documentation", id: "docs" },
   { icon: Settings, label: "Settings", id: "settings" },
@@ -12,8 +33,8 @@ const navigationItems = [
 
 export function Sidebar({ activeTab, onTabChange }) {
   return (
-    <aside className="w-64 bg-sidebar border-r border-sidebar-border flex flex-col">
-      <div className="p-6 border-b border-sidebar-border">
+    <aside className="w-64 bg-sidebar border-r border-sidebar-border flex flex-col overflow-y-auto">
+      <div className="p-6 border-b border-sidebar-border sticky top-0 bg-sidebar">
         <h1 className="text-2xl font-bold text-sidebar-foreground flex items-center gap-2">
           <Brain className="w-8 h-8 text-sidebar-accent" />
           FraudShield
@@ -29,7 +50,7 @@ export function Sidebar({ activeTab, onTabChange }) {
             <button
               key={item.id}
               onClick={() => onTabChange(item.id)}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors text-left ${
+              className={`w-full flex items-center gap-3 px-4 py-2 rounded-lg transition-colors text-left text-sm ${
                 isActive
                   ? "bg-sidebar-primary text-sidebar-primary-foreground"
                   : "text-sidebar-foreground hover:bg-sidebar-accent/10"

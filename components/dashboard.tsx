@@ -1,11 +1,22 @@
 "use client"
 
+// ... existing imports ...
+import { useMemo } from "react"
 import { MetricsGrid } from "./metrics-grid"
 import { RecentTransactions } from "./recent-transactions"
 import { ModelPerformance } from "./model-performance"
 import { FraudTrends } from "./fraud-trends"
 
 export function Dashboard() {
+  const dashboardData = useMemo(() => {
+    return {
+      totalTransactions: 125400,
+      fraudulentTransactions: 87,
+      detectionAccuracy: 98.7,
+      preventedLoss: 2400000,
+    }
+  }, [])
+
   return (
     <div className="p-8 space-y-8">
       <div>
